@@ -2,12 +2,10 @@ package com.leclowndu93150.threadtweak.mixin;
 
 import com.leclowndu93150.threadtweak.SmoothBoot;
 import com.leclowndu93150.threadtweak.util.LoggingForkJoinWorkerThread;
+import net.minecraft.TracingExecutor;
 import net.minecraft.Util;
 import net.minecraft.util.Mth;
-import org.spongepowered.asm.mixin.Final;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Mutable;
-import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -26,10 +24,10 @@ public abstract class UtilMixin {
 	private static ExecutorService BOOTSTRAP_EXECUTOR;*/
 
     @Shadow @Final @Mutable
-    private static ExecutorService BACKGROUND_EXECUTOR;
+    private static TracingExecutor BACKGROUND_EXECUTOR;
 
     @Shadow @Final @Mutable
-    private static ExecutorService IO_POOL;
+    private static TracingExecutor IO_POOL;
 
     @Shadow
     private static void onThreadException(Thread thread, Throwable throwable) {}
@@ -64,7 +62,7 @@ public abstract class UtilMixin {
     /**
      * Replace
      */
-    private static ExecutorService replWorker(String name) {
+    private static TracingExecutor replWorker(String name) {
         if (!SmoothBoot.initConfig) {
             SmoothBoot.regConfig();
             SmoothBoot.initConfig = true;
@@ -72,7 +70,7 @@ public abstract class UtilMixin {
 
         AtomicInteger atomicInteger = new AtomicInteger(1);
 
-        return new ForkJoinPool(Mth.clamp(select(name, SmoothBoot.config.threadCount.bootstrap,
+        ExecutorService executorService = new ForkJoinPool(Mth.clamp(select(name, SmoothBoot.config.threadCount.bootstrap,
                 SmoothBoot.config.threadCount.main), 1, 0x7fff), (forkJoinPool) -> {
             String workerName = "Worker-" + name + "-" + atomicInteger.getAndIncrement();
             SmoothBoot.LOGGER.debug("Initialized " + workerName);
@@ -83,15 +81,17 @@ public abstract class UtilMixin {
             forkJoinWorkerThread.setName(workerName);
             return forkJoinWorkerThread;
         }, UtilMixin::onThreadException, true);
+
+        return new TracingExecutor(executorService);
     }
 
     /**
      * Replace
      */
-    private static ExecutorService replIoWorker() {
+    private static TracingExecutor replIoWorker() {
         AtomicInteger atomicInteger = new AtomicInteger(1);
 
-        return Executors.newCachedThreadPool((runnable) -> {
+        ExecutorService executorService =  Executors.newCachedThreadPool((runnable) -> {
             String workerName = "IO-Worker-" + atomicInteger.getAndIncrement();
             SmoothBoot.LOGGER.debug("Initialized " + workerName);
 
@@ -102,8 +102,10 @@ public abstract class UtilMixin {
             thread.setUncaughtExceptionHandler(UtilMixin::onThreadException);
             return thread;
         });
+        return new TracingExecutor(executorService);
     }
 
+    @Unique
     private static <T> T select(String name, T bootstrap, T main) {
         return Objects.equals(name, "Bootstrap") ? bootstrap : main;
     }

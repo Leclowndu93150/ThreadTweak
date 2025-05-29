@@ -4,7 +4,7 @@ plugins {
     id 'org.spongepowered.mixin' version '0.7-SNAPSHOT'
 }
 base {
-    archivesName = "${mod_id}-1.21.1-Forge"
+    archivesName = "${mod_id}-1.21.3+-Forge"
 }
 mixin {
     config("${mod_id}.mixins.json")
