@@ -32,7 +32,7 @@ prism {
         }
         forge {
             loaderVersion = "47.4.18"
-            loaderVersionRange = "[47,)"
+            loaderVersionRange = "[4,)"
         }
     }
 
@@ -42,7 +42,7 @@ prism {
         }
         neoforge {
             loaderVersion = "21.1.226"
-            loaderVersionRange = "[21.1,)"
+            loaderVersionRange = "[4,)"
         }
     }
 
@@ -52,7 +52,7 @@ prism {
         }
         neoforge {
             loaderVersion = "21.11.42"
-            loaderVersionRange = "[21.11,)"
+            loaderVersionRange = "[4,)"
         }
     }
 
@@ -62,7 +62,7 @@ prism {
         }
         neoforge {
             loaderVersion = "26.1.2.12-beta"
-            loaderVersionRange = "[26.1,)"
+            loaderVersionRange = "[4,)"
         }
     }
 }
