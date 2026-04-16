@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.leclowndu93150.threadtweak.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": ["UtilMixin"],
+  "client": ["client.MainMixin", "client.IntegratedServerMixin"],
+  "server": ["server.MainMixin"],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
