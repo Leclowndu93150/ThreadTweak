@@ -65,4 +65,24 @@ prism {
             loaderVersionRange = "[4,)"
         }
     }
+
+    version("26.2") {
+        fabric {
+            loaderVersion = "0.19.5"
+        }
+        neoforge {
+            loaderVersion = "26.2.0.88"
+            loaderVersionRange = "[4,)"
+        }
+    }
+
+    version("26.3") {
+        fabric {
+            loaderVersion = "0.19.5"
+        }
+        neoforge {
+            loaderVersion = "26.3.0.25-beta"
+            loaderVersionRange = "[4,)"
+        }
+    }
 }
